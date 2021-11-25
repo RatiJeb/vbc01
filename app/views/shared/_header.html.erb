@@ -1,0 +1,7 @@
+<div>
+  <h1>Header</h1>
+  <% @category = Category.last %>
+
+  <%#= render partial: 'shared/menu', locals: { menu_title: 'Rails App' } %>
+  <%= render partial: 'shared/menu', layout: 'shared/wrapper', object: @category, as: :abc %>
+</div>

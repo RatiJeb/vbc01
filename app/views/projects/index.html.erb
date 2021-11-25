@@ -17,7 +17,7 @@
     <% @projects.each do |project| %>
       <tr>
         <td><%= project.title %></td>
-        <td><%= project.format %></td>
+        <td><%= format_with_ext(project.format) %></td>
         <td><%= project.description %></td>
         <td><%= project.category_id %></td>
         <td><%= link_to 'Show', project %></td>

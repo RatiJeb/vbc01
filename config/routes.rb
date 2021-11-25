@@ -3,5 +3,6 @@ Rails.application.routes.draw do
   resources :projects
   resources :categories
   root to: 'projects#index'
-  
+  resources :users
+  get 'countries/fetch_cities'
 end
