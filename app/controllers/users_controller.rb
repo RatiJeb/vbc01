@@ -2,16 +2,16 @@ class UsersController < ApplicationController
     layout 'simple'
 
     before_action :set_default_country, only: %i[ new create ]
-    before_action :set_user_and_profile, only: %i[ edit update destroy]
-    before_action :set_edit_country, only: %i[ edit ]
+    before_action :set_user_and_profile, only: %i[ edit destroy]
 
     def index
         @users = User.all
     end
 
     def new
-        @user = User.new
+        @user = User.new        
         @profile = @user.build_profile
+        #@user.terms_of_use = nil
     end
 
 
@@ -27,11 +27,17 @@ class UsersController < ApplicationController
     end
 
     def edit
-        
+        @countries = Country.all
+        @cities = City.where(country_id: @user.country_id)
     end
 
     def update
-        if @user.update(user_params) && @profile.update(profile_params)
+
+        @user = User.find(params[:id])
+    
+        @user.profile.assign_attributes(profile_params)
+    
+        if @user.update(user_params)
             redirect_to users_url
         else
             @cities = City.by_country(@user.country_id)
@@ -40,10 +46,16 @@ class UsersController < ApplicationController
     end
 
     def destroy
-        @profile.destroy
-        @user.destroy
-        respond_to do |format|
-            format.html { redirect_to users_url, notice: "User was successfully destroyed." }
+        ActiveRecord::Base.transaction do
+
+            @user.profile.destroy!
+        
+            @user.destroy!
+
+
+            respond_to do |format|
+                format.html { redirect_to users_url, notice: "User was successfully destroyed." }
+            end
         end
     end
 
@@ -54,14 +66,9 @@ class UsersController < ApplicationController
         @cities = []
     end
 
-    def set_edit_country
-        @countries = Country.all
-        @cities = City.where(country_id: @user.country_id)
-    end
-
     def set_user_and_profile
         @user = User.find(params[:id])
-        @profile = Profile.find(params[:id])
+        @profile = @user.profile
     end
 
     def user_params

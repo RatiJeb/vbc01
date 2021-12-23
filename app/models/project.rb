@@ -1,8 +1,14 @@
 class Project < ApplicationRecord
   belongs_to :category
-  KNOWN_FORMATS = %w[plain markdown].freeze
 
-  validates :title, :format, :description, presence: true
-  validates :title, length: {minimum:5, maximum:150}
-  validates :format, inclusion: {in: KNOWN_FORMATS, message: "%w{value} is not included in #{KNOWN_FORMATS}"}
+  has_one :first_task, class_name: 'Task', foreign_key: 'project_id'
+  has_many :tasks, class_name: 'Task', foreign_key: 'project_id'
+
+  belongs_to :category, required: false
+  has_one :task, class_name: 'Task', foreign_key: 'project_id'
+
+  scope :active, -> { where(active: true) }
+  scope :inactive, -> { where(active: false) }
+  scope :with_category, -> { where.not(category_id: nil) }
+  scope :filter_by_category, -> (id) { where(category_id: id) }
 end

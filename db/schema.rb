@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_24_180953) do
+ActiveRecord::Schema.define(version: 2021_12_22_182824) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,21 @@ ActiveRecord::Schema.define(version: 2021_11_24_180953) do
     t.string "name", limit: 25, null: false
   end
 
+  create_table "posts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "moderator_id"
+    t.string "title", limit: 255, null: false
+    t.text "body", null: false
+    t.datetime "published_at"
+    t.datetime "scheduled_at"
+    t.string "cancellation_reason"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "status_state"
+    t.index ["moderator_id"], name: "index_posts_on_moderator_id"
+    t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
   create_table "profiles", force: :cascade do |t|
     t.string "first_name", limit: 255
     t.string "last_name", limit: 255
@@ -52,6 +67,7 @@ ActiveRecord::Schema.define(version: 2021_11_24_180953) do
     t.bigint "category_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "active", default: false
     t.index ["category_id"], name: "index_projects_on_category_id"
   end
 
@@ -74,6 +90,7 @@ ActiveRecord::Schema.define(version: 2021_11_24_180953) do
     t.boolean "terms_of_use", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "is_admin", default: false
     t.index ["city_id"], name: "index_users_on_city_id"
     t.index ["country_id"], name: "index_users_on_country_id"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -82,6 +99,8 @@ ActiveRecord::Schema.define(version: 2021_11_24_180953) do
   end
 
   add_foreign_key "cities", "countries"
+  add_foreign_key "posts", "users"
+  add_foreign_key "posts", "users", column: "moderator_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "projects", "categories"
   add_foreign_key "tasks", "projects"
