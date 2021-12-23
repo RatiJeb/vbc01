@@ -1,0 +1,7 @@
+---
+:max-retries: 3
+:concurrency: 5
+:queues:
+  - default
+  - users
+  - posts

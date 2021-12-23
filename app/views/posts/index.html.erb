@@ -1,0 +1,48 @@
+<div class="row">
+  <p id="notice"><%= notice %></p>
+
+  <div class="col">
+    <%= link_to 'New Post', new_post_path, class: 'btn btn-success' %>
+  </div>
+</div>
+
+<br />
+
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h3>My Posts</h3>
+
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>User</th>
+            <th>Moderator</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>ScheduledAt</th>
+            <th>PublishedAt</th>
+            <th colspan="2"></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <% @posts.each do |post| %>
+            <tr>
+              <td class="align-middle"><%= post.user.username %></span></td>
+              <td class="align-middle"><%= post.moderator&.username %></td>
+              <td class="align-middle"><%= link_to post.title, post %></td>
+              <td class="align-middle"><%= post_styled_badge(post.status_state) %></td>
+              <td class="align-middle"><%= post_styled_date(post.scheduled_at) %></td>
+              <td class="align-middle"><%= post_styled_date(post.published_at) %></td>
+              <td class="align-middle"><%= link_to 'Edit', edit_post_path(post) %></td>
+              <td class="align-middle"><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
